@@ -7,7 +7,7 @@ on:
     types: ['closed']
 
 jobs:
-  test_real_event_is_merge1:
+  test_real_event_is_merge:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
