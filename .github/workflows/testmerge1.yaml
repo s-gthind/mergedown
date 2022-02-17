@@ -15,7 +15,7 @@ jobs:
       - name: echo_trigger_event
         run: |
           branch_name=$(gh pr view  $PR --jq=.headRefName --json=headRefName)
-          echo $branch_name > name_of_branch.txt
+          echo $branch_name 
           
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
