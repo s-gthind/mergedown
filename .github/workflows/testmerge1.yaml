@@ -1,0 +1,22 @@
+name: testgithubevent
+on:
+  pull_request:
+#    branches: 
+#      - release_candidate
+#      - preview
+    types: ['closed']
+
+jobs:
+  test_real_event_is_merge:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: echo_trigger_event
+        run: |
+          branch_name=$(gh pr view  $PR --jq=.headRefName --json=headRefName)
+          echo $branch_name > name_of_branch.txt
+          
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         PR: ${{ github.event.number }}
