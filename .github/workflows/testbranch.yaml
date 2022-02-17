@@ -2,8 +2,8 @@ name: testgithubevent
 on:
   pull_request:
     branches: 
-#      - release_candidate
-#      - preview
+      - release_candidate
+      - preview
     types: ['closed']
 
 jobs:
