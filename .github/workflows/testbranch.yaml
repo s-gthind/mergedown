@@ -16,6 +16,16 @@ jobs:
         run: |
           branch_name=$(gh pr view  $PR --jq=.headRefName --json=headRefName)
           echo $branch_name 
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+  extract_branch_name:
+    if: ${{ github.ref == 'refs/remotes/origin/preview' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "yay"
+          echo "Deploying to production server on branch $GITHUB_REF"
+          echo "yay"
+      
           
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
