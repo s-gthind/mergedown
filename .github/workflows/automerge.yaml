@@ -5,7 +5,7 @@ on:
       - release_candidate
       - preview
     types: ['closed']
-
+##Test1
 jobs:
   action_on_automerge:
     if: github.event.pull_request.merged == true
