@@ -1,0 +1,52 @@
+name: automerge_to_preview_or_develop
+on:
+  pull_request:
+    branches:
+      - release_candidate
+      - preview
+    types: ['closed']
+##Test1
+jobs:
+  action_on_automerge:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: echo_trigger_event
+        run: |
+          base=${GITHUB_REF}
+          author_pr=${{ github.event.pull_request.user.login }}
+
+          if [[ "$base" == release_candidate ]]
+          then
+            target=preview
+          elif [[ "$base" == preview ]]
+          then
+            target=develop
+          else
+            exit 0
+          fi
+
+          temp_branch="merge_${base}_${target}_$PR"
+
+          git fetch origin "$target"
+
+          git checkout -b "$temp_branch" "origin/$target"
+
+
+          merge_output=$(mktemp output.txt.XXXXXX)
+
+          if ! git merge "origin/$base" > $merge_output 2>&1
+          then
+            body="There are conflicts while merging the $base down to $target. Please resolve the conflicts manually."
+            gh pr comment "$PR" --body "@$author_pr $(echo "$body"; echo '```'; cat $merge_output; echo '```')" 
+          else
+            git push origin "${temp_branch}:${temp_branch}"
+            gh create pr --title "Merge $base down to $target" --body "Automerge action generating PR" --base "$target"
+          fi
+
+
+
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         PR: ${{ github.event.number }}
